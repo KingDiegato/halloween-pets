@@ -1,9 +1,9 @@
 "use client";
-import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { fileValidator } from "./utils/fileValidator";
 import { ImageInput } from "@/components/imageInput";
+import { CldImage } from "next-cloudinary";
 
 export default function Home() {
   const [binary, setBinary] = useState("");
@@ -64,7 +64,7 @@ export default function Home() {
 
         {binary ? (
           <>
-            <img src={`${binary}`} alt="My-pet" width={600} height={420} />
+            <CldImage width={600} height={420} src={binary} alt="My-pet" />
             <button
               className="bg-blue-500 text-white font-bold py-2 px-4 rounded self-end"
               onClick={() => setBinary("")}
