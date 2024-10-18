@@ -2,9 +2,9 @@ import supabase from "@/client/supabase";
 
 const posts = supabase.from("Publicacion");
 
-const usePosts = () => {
+const usePosts = (filter) => {
   const getPosts = async () => {
-    const { data, error } = await posts.select("name");
+    const { data, error } = await posts.select(filter || "*");
     return { data, error };
   };
 
