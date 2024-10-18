@@ -18,7 +18,7 @@ export default function Home() {
 
   useEffect(
     function getAllPosts() {
-      if (posts.length === 0) return;
+      if (posts.length > 0) return;
       getPosts().then((res) => setPosts(res.data));
     },
     [posts.length]
