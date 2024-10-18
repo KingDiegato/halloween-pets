@@ -1,9 +1,10 @@
 "use client";
-import { useCallback, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { fileValidator } from "./utils/fileValidator";
 import { ImageInput } from "@/components/imageInput";
 import { CldImage } from "next-cloudinary";
+import usePosts from "@/hooks/usePosts";
 
 export default function Home() {
   const [binary, setBinary] = useState("");
@@ -15,7 +16,6 @@ export default function Home() {
       reader.onerror = () => console.log("file reading has failed");
       reader.onload = () => {
         const binaryStr = reader.result;
-        console.log(binaryStr);
         const blob = new Blob([binaryStr], { type: "image/png" });
         const url = URL.createObjectURL(blob);
         setError("");
@@ -31,7 +31,14 @@ export default function Home() {
     preventDropOnDocument: true,
     validator: (file) => fileValidator(file, setError),
   });
-  useLayoutEffect(() => {}, []);
+  const { getPosts } = usePosts();
+
+  useEffect(
+    function getAllPosts() {
+      getPosts().then((res) => console.log(res));
+    },
+    [getPosts]
+  );
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
