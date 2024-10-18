@@ -1,10 +1,10 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { fileValidator } from "./utils/fileValidator";
 import { ImageInput } from "@/components/imageInput";
 import { CldImage } from "next-cloudinary";
 import usePosts from "@/hooks/usePosts";
+import { fileValidator } from "@/app/utils/fileValidator";
 
 export default function Post() {
   const [binary, setBinary] = useState("");
