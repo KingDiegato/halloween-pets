@@ -1,4 +1,8 @@
 "use client";
+{
+  /* eslint-disable @next/next/no-img-element */
+}
+
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { fileValidator } from "./utils/fileValidator";
@@ -7,37 +11,16 @@ import { CldImage } from "next-cloudinary";
 import usePosts from "@/hooks/usePosts";
 
 export default function Home() {
-  const [binary, setBinary] = useState("");
-  const [error, setError] = useState("");
-  const onDrop = useCallback((acceptedFiles) => {
-    acceptedFiles.forEach((file) => {
-      const reader = new FileReader();
-      reader.onabort = () => console.log("file reading was aborted");
-      reader.onerror = () => console.log("file reading has failed");
-      reader.onload = () => {
-        const binaryStr = reader.result;
-        const blob = new Blob([binaryStr], { type: "image/png" });
-        const url = URL.createObjectURL(blob);
-        setError("");
-        setBinary(url);
-      };
-      reader.readAsArrayBuffer(file);
-    });
-  }, []);
+  const [posts, setPosts] = useState([]);
 
-  const { getInputProps, getRootProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: "image/*",
-    preventDropOnDocument: true,
-    validator: (file) => fileValidator(file, setError),
-  });
   const { getPosts } = usePosts();
 
   useEffect(
     function getAllPosts() {
-      getPosts().then((res) => console.log(res));
+      getPosts().then((res) => setPosts(res.data));
+      console.log(posts);
     },
-    [getPosts]
+    [getPosts, posts]
   );
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -69,24 +52,23 @@ export default function Home() {
           }}
         </CldUploadWidget> */}
 
-        {binary ? (
-          <>
-            <CldImage width={600} height={420} src={binary} alt="My-pet" />
-            <button
-              className="bg-blue-500 text-white font-bold py-2 px-4 rounded self-end"
-              onClick={() => setBinary("")}
-            >
-              Intentar con otra
-            </button>
-          </>
-        ) : (
-          <ImageInput
-            getRootProps={getRootProps}
-            getInputProps={getInputProps}
-            isDragActive={isDragActive}
-          />
-        )}
-        {error && <p className="text-red-500">{error}</p>}
+        {posts.map((post) => {
+          return (
+            <div key={post.id}>
+              <img
+                src={post.picture}
+                alt="pfp"
+                width={36}
+                height={36}
+                className="rounded-full"
+              />
+              <h2>{post.name}</h2>
+              <p>{post.content}</p>
+              <img src={post.image} alt="image" width={200} height={200} />
+              <span>{post.likes}</span>
+            </div>
+          );
+        })}
       </main>
     </div>
   );
