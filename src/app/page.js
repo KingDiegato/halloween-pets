@@ -4,11 +4,7 @@
   /* eslint-disable react-hooks/exhaustive-deps */
 }
 
-import { useCallback, useEffect, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { fileValidator } from "./utils/fileValidator";
-import { ImageInput } from "@/components/imageInput";
-import { CldImage } from "next-cloudinary";
+import { useEffect, useState } from "react";
 import usePosts from "@/hooks/usePosts";
 
 export default function Home() {
