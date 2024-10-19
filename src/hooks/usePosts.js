@@ -6,20 +6,31 @@ const comments = supabase.from("Comentario");
 
 const usePosts = (filter) => {
   const getPosts = async () => {
-    let postIndex;
     const { data: post, error: reqError } = await posts.select(filter || "*");
-    for (let i = 0; i < post.length; i++) {
-      postIndex = i;
+    if (reqError) {
+      console.error("Error fetching posts:", reqError);
+    } else {
+      for (const p of post) {
+        const { data: comments, error: commentsError } = await supabase
+          .from("Comentario")
+          .select("*")
+          .eq("publication", p.id);
+
+        if (commentsError) {
+          console.error(
+            `Error fetching comments for post ${p.id}:`,
+            commentsError
+          );
+        } else {
+          p.comments = comments; // Asignar los comentarios a la publicación correspondiente
+        }
+      }
     }
-    const { data: comment, error: commentsError } = await comments
-      .select("*")
-      .eq("publication", post[postIndex]?.id);
+
     return {
       data: post,
-      comments: comment,
       error: {
         reqError,
-        commentsError,
       },
     };
   };

@@ -4,30 +4,34 @@
   /* eslint-disable react-hooks/exhaustive-deps */
 }
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import usePosts from "@/hooks/usePosts";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
-  const [comments, setComments] = useState([]);
+
+  const commented = useRef(false);
 
   const { getPosts, insertPost, addComment } = usePosts();
 
   useEffect(
     function getAllPosts() {
-      if (posts.length > 0) return;
       getPosts().then((res) => {
         setPosts(res.data);
-        setComments(res.comments);
+        if (commented.current === true) {
+          commented.current = false;
+          return;
+        }
       });
     },
-    [posts.length, comments?.length]
+    [posts.length, commented]
   );
 
   const handleComment = async (e, id, comment) => {
     e.preventDefault();
     try {
       await addComment(id, comment);
+      commented.current = true;
       return "ok";
     } catch (err) {
       console.log(err);
@@ -89,7 +93,7 @@ export default function Home() {
                 />
                 <button type="submit">Comentar</button>
               </form>
-              {comments?.map((comment) => {
+              {post.comments?.map((comment) => {
                 return (
                   <div key={comment.id}>
                     <h1>{comment.publication === post.id && comment.name}</h1>
