@@ -1,10 +1,10 @@
-function getRandomFullName(names, surnames) {
+export function getRandomFullName(names, surnames) {
   const randomNameIndex = Math.floor(Math.random() * names.length);
   const randomSurnameIndex = Math.floor(Math.random() * surnames.length);
   return `${names[randomNameIndex]} ${surnames[randomSurnameIndex]}`;
 }
 
-const names = [
+export const names = [
   "Calabaza",
   "Diente",
   "Elefante",
@@ -26,7 +26,7 @@ const names = [
   "Zorro",
 ];
 
-const surnames = [
+export const surnames = [
   "Afable",
   "Audaz",
   "Azul",
@@ -50,5 +50,4 @@ const surnames = [
   "Volante",
 ];
 
-export const myName =
-  localStorage?.getItem("my-name") || getRandomFullName(names, surnames);
+export const myName = localStorage.getItem("name");

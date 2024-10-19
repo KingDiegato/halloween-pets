@@ -25,6 +25,8 @@ export default function Home() {
     e.preventDefault();
     try {
       await addComment(id, comment);
+      await getPosts().then((res) => setPosts(res.data));
+      e.target.reset();
       return "ok";
     } catch (err) {
       console.log(err);
