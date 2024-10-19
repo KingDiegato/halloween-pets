@@ -9,16 +9,30 @@ import usePosts from "@/hooks/usePosts";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
+  const [comments, setComments] = useState([]);
 
-  const { getPosts } = usePosts();
+  const { getPosts, insertPost, addComment } = usePosts();
 
   useEffect(
     function getAllPosts() {
       if (posts.length > 0) return;
-      getPosts().then((res) => setPosts(res.data));
+      getPosts().then((res) => {
+        setPosts(res.data);
+        setComments(res.comments);
+      });
     },
-    [posts.length]
+    [posts.length, comments?.length]
   );
+
+  const handleComment = async (e, id, comment) => {
+    e.preventDefault();
+    try {
+      await addComment(id, comment);
+      return "ok";
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -63,6 +77,26 @@ export default function Home() {
               <p>{post.content}</p>
               <img src={post.image} alt="image" width={200} height={200} />
               <span>{post.likes}</span>
+              <form
+                onSubmit={(e) =>
+                  handleComment(e, post.id, e.target.comment.value)
+                }
+              >
+                <input
+                  type="text"
+                  name="comment"
+                  placeholder="Comenta que te pareció"
+                />
+                <button type="submit">Comentar</button>
+              </form>
+              {comments?.map((comment) => {
+                return (
+                  <div key={comment.id}>
+                    <h1>{comment.publication === post.id && comment.name}</h1>
+                    <p>{comment.publication === post.id && comment.comment}</p>
+                  </div>
+                );
+              })}
             </div>
           );
         })}
