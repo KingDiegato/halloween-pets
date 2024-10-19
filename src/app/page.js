@@ -10,28 +10,21 @@ import usePosts from "@/hooks/usePosts";
 export default function Home() {
   const [posts, setPosts] = useState([]);
 
-  const commented = useRef(false);
-
   const { getPosts, insertPost, addComment } = usePosts();
 
   useEffect(
     function getAllPosts() {
       getPosts().then((res) => {
         setPosts(res.data);
-        if (commented.current === true) {
-          commented.current = false;
-          return;
-        }
       });
     },
-    [posts.length, commented]
+    [posts.length]
   );
 
   const handleComment = async (e, id, comment) => {
     e.preventDefault();
     try {
       await addComment(id, comment);
-      commented.current = true;
       return "ok";
     } catch (err) {
       console.log(err);
