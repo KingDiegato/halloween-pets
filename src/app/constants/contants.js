@@ -49,5 +49,3 @@ export const surnames = [
   "Verde",
   "Volante",
 ];
-
-export const myName = localStorage.getItem("name");
