@@ -1,15 +1,12 @@
 import supabase from "@/client/supabase";
-import {
-  getRandomFullName,
-  myName,
-  names,
-  surnames,
-} from "@/app/constants/contants";
+import { getRandomFullName, names, surnames } from "@/app/constants/contants";
+import { useUsername } from "@/stores/username";
 
 const posts = supabase.from("Publicacion");
 const comments = supabase.from("Comentario");
 
 const usePosts = (filter) => {
+  const { username, setUsername } = useUsername();
   const getPosts = async () => {
     const { data: post, error: reqError } = await posts.select(filter || "*");
     if (reqError) {
@@ -47,8 +44,12 @@ const usePosts = (filter) => {
   };
 
   const addComment = async (id, comment) => {
+    const randomName = getRandomFullName(names, surnames);
+    if (!username) {
+      setUsername(randomName);
+    }
     const { data, error } = await comments.insert({
-      name: myName ? myName : getRandomFullName(names, surnames),
+      name: username ? username : randomName,
       publication: id,
       comment,
     });
