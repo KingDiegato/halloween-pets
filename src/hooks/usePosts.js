@@ -84,7 +84,27 @@ const usePosts = (filter) => {
       .single();
     return { data, error };
   };
-  return { getPosts, insertPost, addComment, likePost };
+
+  const removeLike = async (newPostLiked) => {
+    console.log(newPostLiked);
+    const { data: post } = await supabase
+      .from("Publicacion")
+      .select("likes")
+      .eq("id", newPostLiked)
+      .single();
+    const newLikes = post.likes - 1;
+    await supabase
+      .from("Publicacion")
+      .update({ likes: newLikes })
+      .eq("id", newPostLiked);
+    const { data, error } = await supabase
+      .from("Publicacion")
+      .select()
+      .eq("id", newPostLiked)
+      .single();
+    return { data, error };
+  };
+  return { getPosts, insertPost, addComment, removeLike, likePost };
 };
 
 export default usePosts;

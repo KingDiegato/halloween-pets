@@ -37,9 +37,7 @@ export default function Home() {
   }
 
   const { getPosts, insertPost, addComment, likePost } = usePosts();
-  const { likes, dislikes, setLike, removeLike, IDislike } = useLike(
-    (state) => state
-  );
+
   useEffect(
     function posts() {
       getAllPosts();
@@ -47,17 +45,6 @@ export default function Home() {
     [posts.length]
   );
 
-  const handleComment = async (e, id, comment) => {
-    e.preventDefault();
-    try {
-      await addComment(id, comment);
-      getAllPosts();
-      e.target.reset();
-      return "ok";
-    } catch (err) {
-      console.error(err);
-    }
-  };
   return (
     <div className="grid md:grid-cols-[0.5fr_1fr_0.5fr] items-center justify-items-center min-h-screen p-4 pb-20 gap-16 md:p-10 font-[family-name:var(--font-geist-sans)]">
       <aside>
@@ -67,16 +54,10 @@ export default function Home() {
       </aside>
       <main className="flex flex-col gap-8 items-center sm:items-start">
         <PostsScroll
-          IDislike={IDislike}
-          dislikes={dislikes}
-          likes={likes}
-          likePost={likePost}
           posts={posts}
-          removeLike={removeLike}
           updatePost={updatePost}
           visiblePostId={visiblePostId}
           setVisiblePostId={setVisiblePostId}
-          setLike={setLike}
         />
       </main>
       <aside>

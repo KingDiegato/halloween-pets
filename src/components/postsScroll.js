@@ -1,3 +1,5 @@
+import usePosts from "@/hooks/usePosts";
+import { useLike } from "@/stores/like";
 import { AiOutlineSend } from "react-icons/ai";
 import { FaHeartBroken } from "react-icons/fa";
 import { FaHeart, FaRegCommentDots, FaRegHeart } from "react-icons/fa6";
@@ -8,14 +10,25 @@ export const PostsScroll = ({
   posts,
   visiblePostId,
   setVisiblePostId,
-  likePost,
-  IDislike,
-  dislikes,
-  likes,
-  setLike,
-  removeLike,
   updatePost,
 }) => {
+  const { likes, dislikes, setLike, removeLike, IDislike } = useLike(
+    (state) => state
+  );
+  const { likePost, removeLike: dislikePost } = usePosts();
+
+  const handleComment = async (e, id, comment) => {
+    e.preventDefault();
+    try {
+      await addComment(id, comment);
+      getAllPosts();
+      e.target.reset();
+      return "ok";
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return posts.map((post) => {
     return (
       <div key={post.id}>
@@ -58,7 +71,10 @@ export const PostsScroll = ({
             <button
               onClick={() => {
                 if (likes.includes(post.id)) {
-                  removeLike(post.id);
+                  dislikePost(post.id).then((res) => {
+                    updatePost(res);
+                    removeLike(post.id);
+                  });
                   return;
                 }
                 likePost(post.id).then((res) => {
@@ -73,7 +89,11 @@ export const PostsScroll = ({
                 <FaRegHeart size={24} />
               )}
             </button>
-            <button onClick={() => IDislike(post.id)}>
+            <button
+              onClick={() => {
+                IDislike(post.id);
+              }}
+            >
               {dislikes.includes(post.id) ? (
                 <FaHeartBroken size={24} />
               ) : (
