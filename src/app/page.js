@@ -6,14 +6,6 @@
 
 import { useEffect, useState } from "react";
 import usePosts from "@/hooks/usePosts";
-import { FaHeart } from "react-icons/fa6";
-import { FaRegHeart } from "react-icons/fa";
-import { FaHeartBroken } from "react-icons/fa";
-import { LiaHeartBrokenSolid } from "react-icons/lia";
-import { FaRegCommentDots } from "react-icons/fa";
-import { FiShare2 } from "react-icons/fi";
-import { AiOutlineSend } from "react-icons/ai";
-import { useLike } from "@/stores/like";
 import { PostsScroll } from "@/components/postsScroll";
 
 export default function Home() {
@@ -36,7 +28,7 @@ export default function Home() {
     });
   }
 
-  const { getPosts, insertPost, addComment, likePost } = usePosts();
+  const { getPosts } = usePosts();
 
   useEffect(
     function posts() {
@@ -46,10 +38,11 @@ export default function Home() {
   );
 
   return (
-    <div className="grid md:grid-cols-[0.5fr_1fr_0.5fr] items-center justify-items-center min-h-screen p-4 pb-20 gap-16 md:p-10 font-[family-name:var(--font-geist-sans)]">
+    <div className="grid md:grid-cols-[0.5fr_1fr_0.5fr]  justify-items-center min-h-screen p-4 pb-20 gap-16 md:p-10 font-[family-name:var(--font-geist-sans)]">
       <aside>
-        <div>
-          <p>content aside</p>
+        <div className="flex gap-4 text-[#ff7816] items-center">
+          <img src="/icon/logo_54x30.svg" />
+          <h1 className="text-xl font-extrabold">Halloween Pets</h1>
         </div>
       </aside>
       <main className="flex flex-col gap-8 items-center sm:items-start">
@@ -61,10 +54,11 @@ export default function Home() {
           getAllPosts={getAllPosts}
         />
       </main>
-      <aside>
-        <div>
-          <p>content aside</p>
-        </div>
+      <aside className="flex flex-col flex-grow w-full gap-2">
+        <div className="flex min-h-[80dvh] border"></div>
+        <button className="bg-[#ff7816] hover:bg-[#fd7301] text-white font-bold py-2 px-4 rounded">
+          Publicar
+        </button>
       </aside>
     </div>
   );
