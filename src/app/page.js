@@ -18,16 +18,30 @@ import { useLike } from "@/stores/like";
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [visiblePostId, setVisiblePostId] = useState(null);
+  function getAllPosts() {
+    getPosts().then((res) => {
+      setPosts(res.data);
+    });
+  }
+  function updatePost(res) {
+    setPosts((posts) => {
+      return posts.map((post) => {
+        if (post.id === res.data.id) {
+          post.likes = res.data.likes;
+          return post;
+        }
+        return post;
+      });
+    });
+  }
 
-  const { getPosts, insertPost, addComment } = usePosts();
+  const { getPosts, insertPost, addComment, likePost } = usePosts();
   const { likes, dislikes, setLike, removeLike, IDislike } = useLike(
     (state) => state
   );
   useEffect(
-    function getAllPosts() {
-      getPosts().then((res) => {
-        setPosts(res.data);
-      });
+    function posts() {
+      getAllPosts();
     },
     [posts.length]
   );
@@ -36,11 +50,11 @@ export default function Home() {
     e.preventDefault();
     try {
       await addComment(id, comment);
-      await getPosts().then((res) => setPosts(res.data));
+      getAllPosts();
       e.target.reset();
       return "ok";
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
   return (
@@ -98,7 +112,10 @@ export default function Home() {
                         removeLike(post.id);
                         return;
                       }
-                      setLike(post.id);
+                      likePost(post.id).then((res) => {
+                        setLike(post.id);
+                        updatePost(res);
+                      });
                     }}
                   >
                     {likes.includes(post.id) && !dislikes.includes(post.id) ? (

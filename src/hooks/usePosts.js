@@ -2,17 +2,25 @@ import supabase from "@/client/supabase";
 import { getRandomFullName, names, surnames } from "@/app/constants/contants";
 import { useUsername } from "@/stores/username";
 
-const posts = supabase.from("Publicacion");
-const comments = supabase.from("Comentario");
-
 const usePosts = (filter) => {
   const { username, setUsername } = useUsername();
   const getPosts = async () => {
-    const { data: post, error: reqError } = await posts.select(filter || "*");
+    const { data: post, error: reqError } = await supabase
+      .from("Publicacion")
+      .select(filter || "*");
+
     if (reqError) {
       console.error("Error fetching posts:", reqError);
-    } else {
-      for (const p of post) {
+      return {
+        data: null,
+        error: {
+          reqError,
+        },
+      };
+    }
+
+    const postsWithComments = await Promise.all(
+      post?.map(async (p) => {
         const { data: comments, error: commentsError } = await supabase
           .from("Comentario")
           .select("*")
@@ -23,14 +31,16 @@ const usePosts = (filter) => {
             `Error fetching comments for post ${p.id}:`,
             commentsError
           );
-        } else {
-          p.comments = comments; // Asignar los comentarios a la publicación correspondiente
+          return { ...p, comments: [] }; // Si hay error, se devuelve sin comentarios
         }
-      }
-    }
+
+        // Asignar los comentarios a la publicación correspondiente
+        return { ...p, comments };
+      })
+    );
 
     return {
-      data: post,
+      data: postsWithComments,
       error: {
         reqError,
       },
@@ -39,7 +49,9 @@ const usePosts = (filter) => {
 
   const insertPost = async (post) => {
     const { image, picture, content } = post;
-    const { data, error } = await posts.insert({ image, picture, content });
+    const { data, error } = await supabase
+      .from("Publicacion")
+      .insert({ image, picture, content });
     return { data, error };
   };
 
@@ -56,7 +68,23 @@ const usePosts = (filter) => {
     return { data, error };
   };
 
-  return { getPosts, insertPost, addComment };
+  const likePost = async (id) => {
+    const { data: post } = await supabase
+      .from("Publicacion")
+      .select("likes")
+      .eq("id", id)
+      .single();
+    const newLikes = post.likes + 1;
+    await supabase.from("Publicacion").update({ likes: newLikes }).eq("id", id);
+
+    const { data, error } = await supabase
+      .from("Publicacion")
+      .select()
+      .eq("id", id)
+      .single();
+    return { data, error };
+  };
+  return { getPosts, insertPost, addComment, likePost };
 };
 
 export default usePosts;
