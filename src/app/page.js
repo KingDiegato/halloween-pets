@@ -58,6 +58,7 @@ export default function Home() {
           updatePost={updatePost}
           visiblePostId={visiblePostId}
           setVisiblePostId={setVisiblePostId}
+          getAllPosts={getAllPosts}
         />
       </main>
       <aside>

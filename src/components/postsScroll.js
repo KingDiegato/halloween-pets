@@ -11,11 +11,12 @@ export const PostsScroll = ({
   visiblePostId,
   setVisiblePostId,
   updatePost,
+  getAllPosts,
 }) => {
   const { likes, dislikes, setLike, removeLike, IDislike } = useLike(
     (state) => state
   );
-  const { likePost, removeLike: dislikePost } = usePosts();
+  const { likePost, removeLike: dislikePost, addComment } = usePosts();
 
   const handleComment = async (e, id, comment) => {
     e.preventDefault();

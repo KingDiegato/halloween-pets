@@ -60,7 +60,7 @@ const usePosts = (filter) => {
     if (!username) {
       setUsername(randomName);
     }
-    const { data, error } = await comments.insert({
+    const { data, error } = await supabase.from("Comentario").insert({
       name: username ? username : randomName,
       publication: id,
       comment,
