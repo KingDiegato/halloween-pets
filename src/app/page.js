@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <div className="grid md:grid-cols-[0.5fr_1fr_0.5fr]  justify-items-center min-h-screen p-4 pb-20 gap-16 md:p-10 font-[family-name:var(--font-geist-sans)]">
       <aside>
-        <div className="flex gap-4 text-[#ff7816] items-center">
+        <div className="sticky top-2 flex gap-4 text-[#ff7816] items-center">
           <img src="/icon/logo_54x30.svg" />
           <h1 className="text-xl font-extrabold">Halloween Pets</h1>
         </div>
@@ -55,10 +55,17 @@ export default function Home() {
         />
       </main>
       <aside className="flex flex-col flex-grow w-full gap-2">
-        <div className="flex min-h-[80dvh] border"></div>
-        <button className="bg-[#ff7816] hover:bg-[#fd7301] text-white font-bold py-2 px-4 rounded">
-          Publicar
-        </button>
+        <div className="flex-col p-3  sticky top-2 flex min-h-[80dvh] border">
+          <article id="ads" className="h-full text-center">
+            <h2>This proyect is partner with</h2>
+            <a href="https://cloudinary.com/" target="_blank" rel="noreferrer">
+              <img src="/partners/cloudinary_partner.png" />
+            </a>
+          </article>
+          <button className="bg-[#ff7816] hover:bg-[#fd7301] sticky top-2 text-white font-bold py-2 px-4 rounded">
+            Publicar
+          </button>
+        </div>
       </aside>
     </div>
   );
