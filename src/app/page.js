@@ -4,102 +4,79 @@
   /* eslint-disable react-hooks/exhaustive-deps */
 }
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import usePosts from "@/hooks/usePosts";
+import { PostsScroll } from "@/components/postsScroll";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
+  const [visiblePostId, setVisiblePostId] = useState(null);
+  function getAllPosts() {
+    getPosts().then((res) => {
+      setPosts(res.data);
+    });
+  }
+  function updatePost(res) {
+    setPosts((posts) => {
+      return posts.map((post) => {
+        if (post.id === res.data.id) {
+          post.likes = res.data.likes;
+          return post;
+        }
+        return post;
+      });
+    });
+  }
 
-  const { getPosts, insertPost, addComment } = usePosts();
+  const { getPosts } = usePosts();
 
   useEffect(
-    function getAllPosts() {
-      getPosts().then((res) => {
-        setPosts(res.data);
-      });
+    function posts() {
+      getAllPosts();
     },
     [posts.length]
   );
 
-  const handleComment = async (e, id, comment) => {
-    e.preventDefault();
-    try {
-      await addComment(id, comment);
-      await getPosts().then((res) => setPosts(res.data));
-      e.target.reset();
-      return "ok";
-    } catch (err) {
-      console.log(err);
-    }
-  };
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        {/* <CldUploadWidget
-          signatureEndpoint="<API Endpoint (ex: /api/sign-cloudinary-params)>"
-          options={{
-            cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-            sources: ["local", "url", "camera"],
-            maxFiles: 1,
-            multiple: false,
-            maxFileSize: 5 * 1024 * 1024,
-            language: "en",
-            folder: "pets",
-            styles: {
-              color: "red",
-            },
-          }}
-        >
-          {({ open, ...rest }) => {
-            return (
-              <button
-                className="bg-blue-500 text-white font-bold py-2 px-4 rounded"
-                onClick={() => open()}
-              >
-                Upload an Image
-              </button>
-            );
-          }}
-        </CldUploadWidget> */}
-
-        {posts.map((post) => {
-          return (
-            <div key={post.id}>
-              <img
-                src={post.picture}
-                alt="pfp"
-                width={36}
-                height={36}
-                className="rounded-full"
-              />
-              <h2>{post.name}</h2>
-              <p>{post.content}</p>
-              <img src={post.image} alt="image" width={200} height={200} />
-              <span>{post.likes}</span>
-              <form
-                onSubmit={(e) =>
-                  handleComment(e, post.id, e.target.comment.value)
-                }
-              >
-                <input
-                  type="text"
-                  name="comment"
-                  placeholder="Comenta que te pareció"
-                />
-                <button type="submit">Comentar</button>
-              </form>
-              {post.comments?.map((comment) => {
-                return (
-                  <div key={comment.id}>
-                    <h1>{comment.publication === post.id && comment.name}</h1>
-                    <p>{comment.publication === post.id && comment.comment}</p>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
+    <div className="grid md:grid-cols-[0.5fr_1fr_0.5fr]  justify-items-center min-h-screen p-4 pb-20 gap-16 md:p-10 font-[family-name:var(--font-geist-sans)]">
+      <aside>
+        <div className="sticky top-2 flex gap-4 text-[#ff7816] items-center">
+          <img src="/icon/logo_54x30.svg" />
+          <h1 className="text-xl font-extrabold">Halloween Pets</h1>
+        </div>
+      </aside>
+      <main className="flex flex-col gap-8 items-center sm:items-start">
+        <PostsScroll
+          posts={posts}
+          updatePost={updatePost}
+          visiblePostId={visiblePostId}
+          setVisiblePostId={setVisiblePostId}
+          getAllPosts={getAllPosts}
+        />
       </main>
+      <aside className="flex flex-col flex-grow w-full gap-2">
+        <div className="flex-col p-3  sticky top-2 flex min-h-[80dvh] border">
+          <article id="ads" className="h-full text-center flex flex-col gap-8">
+            <h2>This proyect is partner with</h2>
+            <a href="https://cloudinary.com/" target="_blank" rel="noreferrer">
+              <img src="/partners/cloudinary_partner.png" />
+            </a>
+            <a
+              href="https://acheipneus.com.br/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src="/partners/logo_achei.svg" />
+            </a>
+            <a href="https://supabase.com/" target="_blank" rel="noreferrer">
+              <img src="/partners/supabase.png" />
+            </a>
+          </article>
+          <button className="bg-[#ff7816] hover:bg-[#fd7301] sticky top-2 text-white font-bold py-2 px-4 rounded">
+            Publicar
+          </button>
+        </div>
+      </aside>
     </div>
   );
 }
