@@ -6,6 +6,11 @@ import { FaHeart, FaRegCommentDots, FaRegHeart } from "react-icons/fa6";
 import { FiShare2 } from "react-icons/fi";
 import { LiaHeartBrokenSolid } from "react-icons/lia";
 
+{
+  /* eslint-disable @next/next/no-img-element */
+  /* eslint-disable react-hooks/exhaustive-deps */
+}
+
 export const PostsScroll = ({
   posts,
   visiblePostId,
@@ -120,7 +125,7 @@ export const PostsScroll = ({
               type="text"
               name="comment"
               placeholder="Comenta que te pareció"
-              className="w-full h-8 p-2 border border-slate-300 rounded-lg"
+              className="w-full focus:outline-none h-8 p-2 border border-slate-300 rounded-lg"
             />
             <button type="submit">
               <AiOutlineSend size={24} />

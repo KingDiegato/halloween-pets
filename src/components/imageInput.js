@@ -6,7 +6,7 @@ export const ImageInput = ({
 }) => {
   return (
     <form
-      className={`cursor-pointer border-dashed w-[600px] border-amber-500 border-2 rounded-lg p-20 text-center ${{
+      className={`cursor-pointer border-dashed w-full md:w-[600px] border-amber-500 border-2 rounded-lg p-20 text-center ${{
         ...className,
       }}`}
       {...getRootProps()}
