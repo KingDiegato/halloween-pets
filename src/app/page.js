@@ -56,10 +56,20 @@ export default function Home() {
       </main>
       <aside className="flex flex-col flex-grow w-full gap-2">
         <div className="flex-col p-3  sticky top-2 flex min-h-[80dvh] border">
-          <article id="ads" className="h-full text-center">
+          <article id="ads" className="h-full text-center flex flex-col gap-8">
             <h2>This proyect is partner with</h2>
             <a href="https://cloudinary.com/" target="_blank" rel="noreferrer">
               <img src="/partners/cloudinary_partner.png" />
+            </a>
+            <a
+              href="https://acheipneus.com.br/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src="/partners/logo_achei.svg" />
+            </a>
+            <a href="https://supabase.com/" target="_blank" rel="noreferrer">
+              <img src="/partners/supabase.png" />
             </a>
           </article>
           <button className="bg-[#ff7816] hover:bg-[#fd7301] sticky top-2 text-white font-bold py-2 px-4 rounded">
