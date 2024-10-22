@@ -37,7 +37,7 @@ export const PostsScroll = ({
 
   return posts.map((post) => {
     return (
-      <div key={post.id}>
+      <div className="w-full" key={post.id}>
         <div className="flex gap-4 font-extrabold text-slate-600 text-xl p-1">
           <img
             src={post.picture}
