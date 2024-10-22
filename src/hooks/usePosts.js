@@ -13,7 +13,8 @@ const usePosts = (filter) => {
   const getPosts = async () => {
     const { data: post, error: reqError } = await supabase
       .from("Publicacion")
-      .select(filter || "*");
+      .select(filter || "*")
+      .order("created_at", { ascending: false });
 
     if (reqError) {
       console.error("Error fetching posts:", reqError);
