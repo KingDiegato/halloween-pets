@@ -3,16 +3,17 @@ import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { ImageInput } from "@/components/imageInput";
 import { CldImage } from "next-cloudinary";
-import usePosts from "@/hooks/usePosts";
 import { fileValidator } from "@/app/utils/fileValidator";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Post() {
   const [binary, setBinary] = useState("");
+  const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.forEach((file) => {
+      setImage(file);
       const reader = new FileReader();
       reader.onabort = () => console.log("file reading was aborted");
       reader.onerror = () => console.log("file reading has failed");
@@ -33,14 +34,21 @@ export default function Post() {
     preventDropOnDocument: true,
     validator: (file) => fileValidator(file, setError),
   });
-  const { getPosts } = usePosts();
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData();
 
-  useEffect(
-    function getAllPosts() {
-      getPosts().then((res) => console.log(res));
-    },
-    [getPosts]
-  );
+    formData.append("image", image);
+
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
   return (
     <div className=" items-center justify-items-center min-h-screen p-8 gap-16 sm:px-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center">
@@ -48,36 +56,42 @@ export default function Post() {
           Halloween Pets
         </h1>
         <p>Sube una foto de tu gato o perro para disfrazarlo y publicarlo!</p>
-        <form>
-          <textarea
-            className="w-[320px] sm:w-[500px] focus:outline-none h-16 p-2 border border-slate-300 rounded-lg"
-            type="text"
-            placeholder="En que estas pensando?"
-          />
-        </form>
 
-        {binary ? (
-          <>
+        <textarea
+          className="w-[320px] sm:w-[500px] focus:outline-none h-16 p-2 border border-slate-300 rounded-lg"
+          type="text"
+          placeholder="En que estas pensando?"
+        />
+
+        <>
+          {binary && (
             <CldImage width={600} height={420} src={binary} alt="My-pet" />
-            <div className="flex gap-6 ">
-              <button className="bg-[#ff7816] text-white font-bold py-2 px-4 rounded self-end">
-                Crear publicación!
-              </button>
-              <button
-                className="text-[#ff7816] bg-white border border-[#ff7816] font-bold py-2 px-4 rounded self-end"
-                onClick={() => setBinary("")}
-              >
-                Intentar con otra
-              </button>
-            </div>
-          </>
-        ) : (
-          <ImageInput
-            getRootProps={getRootProps}
-            getInputProps={getInputProps}
-            isDragActive={isDragActive}
-          />
-        )}
+          )}
+          <div className="flex gap-6 ">
+            <button
+              type="submit"
+              form="uploadForm"
+              className="bg-[#ff7816] text-white font-bold py-2 px-4 rounded self-end"
+            >
+              Subir Imagen!
+            </button>
+            <button
+              type="reset"
+              className="text-[#ff7816] bg-white border border-[#ff7816] font-bold py-2 px-4 rounded self-end"
+              onClick={() => setBinary("")}
+            >
+              Intentar con otra
+            </button>
+          </div>
+        </>
+
+        <ImageInput
+          getRootProps={getRootProps}
+          getInputProps={getInputProps}
+          isDragActive={isDragActive}
+          onSubmit={handleSubmit}
+        />
+
         {error && <p className="text-red-500">{error}</p>}
         <Link href="/">
           <Image
