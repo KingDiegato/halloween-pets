@@ -5,11 +5,13 @@ import { persist, createJSONStorage } from "zustand/middleware";
  * Zustand store for username
  * @typedef {import("zustand").UseBoundStore<import('zustand').StoreApi<UsernameStore>>}
  */
-export const useUsername = create(
+export const useUser = create(
   persist(
     (set) => ({
       username: null,
       setUsername: (username) => set({ username }),
+      picture: null,
+      setPicture: (picture) => set({ picture }),
     }),
     {
       name: "username",
@@ -21,6 +23,8 @@ export const useUsername = create(
 /**
  * @typedef {{
  *    username: string | null,
- *    setUsername: (username: string) => void
+ *    setUsername: (username: string) => void,
+ *    picture: string | null,
+ *    setPicture: (picture: string) => void
  * }} UsernameStore
  */

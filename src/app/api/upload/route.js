@@ -43,13 +43,25 @@ export async function POST(request) {
   if (!tags.includes("Cat") && !tags.includes("Dog")) {
     await cloudinary.uploader.destroy(response.public_id);
     return NextResponse.json(
-      { error: "La imagen no contiene un gato o un perro" },
-      { status: 400 }
+      {
+        message: "Error en la categoría",
+        error: "Error en la categoría",
+        url: "",
+        public_id: null,
+        folder: null,
+        ok: false,
+      },
+      { status: 408 }
     );
   }
 
   return NextResponse.json({
     message: "Imagen subida!",
+    error: null,
     url: response.secure_url,
+    public_id: response.public_id,
+    folder: response.folder,
+    ok: true,
+    tags,
   });
 }

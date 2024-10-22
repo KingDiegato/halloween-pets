@@ -6,17 +6,28 @@ import { CldImage } from "next-cloudinary";
 import { fileValidator } from "@/app/utils/fileValidator";
 import Image from "next/image";
 import Link from "next/link";
+import { useTransform } from "@/stores/transform";
+import usePosts from "@/hooks/usePosts";
+import { useRouter } from "next/navigation";
+{
+  /* eslint-disable @next/next/no-img-element */
+}
 
 export default function Post() {
   const [binary, setBinary] = useState("");
   const [image, setImage] = useState("");
   const [error, setError] = useState("");
+  const [transformedImage, setTransformedImage] = useState("");
+  const [comment, setComment] = useState("");
+  const { data, setData, clearStore } = useTransform((state) => state);
+  const { insertPost } = usePosts();
+  const router = useRouter();
   const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.forEach((file) => {
       setImage(file);
       const reader = new FileReader();
-      reader.onabort = () => console.log("file reading was aborted");
-      reader.onerror = () => console.log("file reading has failed");
+      reader.onabort = () => setError("File reading was aborted");
+      reader.onerror = () => setError("Error reading the file");
       reader.onload = () => {
         const binaryStr = reader.result;
         const blob = new Blob([binaryStr], { type: "image/png" });
@@ -28,6 +39,20 @@ export default function Post() {
     });
   }, []);
 
+  const handlePost = async () => {
+    insertPost({
+      image: transformedImage,
+      content: comment,
+    }).then((res) => {
+      if (res.data) {
+        clearStore();
+        setComment("");
+        setTransformedImage("");
+        setImage("");
+      }
+      router.push("/");
+    });
+  };
   const { getInputProps, getRootProps, isDragActive } = useDropzone({
     onDrop,
     accept: "image/*",
@@ -45,6 +70,8 @@ export default function Post() {
         method: "POST",
         body: formData,
       });
+      const data = await response.json();
+      setData({ ...data });
     } catch (e) {
       console.error(e);
     }
@@ -57,35 +84,96 @@ export default function Post() {
         </h1>
         <p>Sube una foto de tu gato o perro para disfrazarlo y publicarlo!</p>
 
+        {transformedImage && (
+          <img
+            width={600}
+            height={420}
+            src={transformedImage}
+            alt="devuelveme algo"
+            className="w-full md:w-[600px]"
+          />
+        )}
+
         <textarea
           className="w-[320px] sm:w-[500px] focus:outline-none h-16 p-2 border border-slate-300 rounded-lg"
           type="text"
+          onChange={(e) => setComment(e.target.value)}
           placeholder="En que estas pensando?"
         />
-
-        <>
-          {binary && (
+        {transformedImage && (
+          <button
+            onClick={handlePost}
+            className="bg-[#ff7816] text-white font-bold py-2 px-4 rounded"
+          >
+            Publicar!
+          </button>
+        )}
+        {binary ? (
+          <>
             <CldImage width={600} height={420} src={binary} alt="My-pet" />
-          )}
-          <div className="flex gap-6 ">
-            <button
-              type="submit"
-              form="uploadForm"
-              className="bg-[#ff7816] text-white font-bold py-2 px-4 rounded self-end"
-            >
-              Subir Imagen!
-            </button>
-            <button
-              type="reset"
-              className="text-[#ff7816] bg-white border border-[#ff7816] font-bold py-2 px-4 rounded self-end"
-              onClick={() => setBinary("")}
-            >
-              Intentar con otra
-            </button>
-          </div>
-        </>
+            {!data.url && (
+              <div className="flex gap-6 ">
+                <button
+                  type="submit"
+                  form="uploadForm"
+                  className="bg-[#ff7816] text-white font-bold py-2 px-4 rounded self-end"
+                >
+                  Subir Imagen!
+                </button>
+                <button
+                  type="reset"
+                  className="text-[#ff7816] bg-white border border-[#ff7816] font-bold py-2 px-4 rounded self-end"
+                  onClick={() => {
+                    setBinary("");
+                    setTransformedImage("");
+                    clearStore();
+                  }}
+                >
+                  Intentar con otra
+                </button>
+              </div>
+            )}
 
+            {data.ok && (
+              <div className="flex gap-6">
+                <button
+                  type="reset"
+                  className="text-[#ff7816] bg-white border border-[#ff7816] font-bold py-2 px-4 rounded self-end"
+                  onClick={() => {
+                    setBinary("");
+                    setTransformedImage("");
+                    clearStore();
+                  }}
+                >
+                  Intentar con otra
+                </button>
+                <button
+                  className="bg-[#ff7816] text-white font-bold py-2 px-4 rounded self-end"
+                  onClick={async () => {
+                    if (image) {
+                      if (!data.public_id) return;
+                      const response = await fetch("/api/transform", {
+                        method: "POST",
+                        body: JSON.stringify(data),
+                      });
+
+                      const res = await response.json();
+                      setTransformedImage(res.image);
+                    }
+                  }}
+                >
+                  Crear Transformación
+                </button>
+              </div>
+            )}
+
+            {data.error && <p className="text-red-500">{data.error}</p>}
+          </>
+        ) : (
+          ""
+        )}
         <ImageInput
+          className={`${binary ? "hidden" : ""}`}
           getRootProps={getRootProps}
           getInputProps={getInputProps}
           isDragActive={isDragActive}

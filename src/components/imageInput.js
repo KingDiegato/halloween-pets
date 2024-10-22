@@ -9,9 +9,7 @@ export const ImageInput = ({
     <form
       id="uploadForm"
       onSubmit={onSubmit}
-      className={`cursor-pointer border-dashed w-full md:w-[600px] border-amber-500 border-2 rounded-lg p-20 text-center ${{
-        ...className,
-      }}`}
+      className={`cursor-pointer border-dashed w-full md:w-[600px] border-amber-500 border-2 rounded-lg p-20 text-center ${className}`}
       {...getRootProps()}
     >
       <input {...getInputProps()} className="bg-red-500 w-full h-8" />

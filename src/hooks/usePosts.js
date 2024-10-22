@@ -1,9 +1,15 @@
 import supabase from "@/client/supabase";
-import { getRandomFullName, names, surnames } from "@/app/constants/contants";
-import { useUsername } from "@/stores/username";
+import {
+  getRandomFullName,
+  names,
+  surnames,
+  getRandomPicture,
+  pictures,
+} from "@/app/constants/contants";
+import { useUser } from "@/stores/username";
 
 const usePosts = (filter) => {
-  const { username, setUsername } = useUsername();
+  const { username, setUsername, picture, setPicture } = useUser();
   const getPosts = async () => {
     const { data: post, error: reqError } = await supabase
       .from("Publicacion")
@@ -48,10 +54,21 @@ const usePosts = (filter) => {
   };
 
   const insertPost = async (post) => {
-    const { image, picture, content } = post;
-    const { data, error } = await supabase
-      .from("Publicacion")
-      .insert({ image, picture, content });
+    const { image, content } = post;
+    const randomName = getRandomFullName(names, surnames);
+    const randomPicture = getRandomPicture(pictures);
+    if (!username) {
+      setUsername(randomName);
+    }
+    if (!picture) {
+      setPicture(randomPicture);
+    }
+    const { data, error } = await supabase.from("Publicacion").insert({
+      name: username ? username : randomName,
+      image,
+      picture,
+      content,
+    });
     return { data, error };
   };
 
