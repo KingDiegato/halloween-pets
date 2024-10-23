@@ -24,13 +24,6 @@ export default function RootLayout({ children }) {
       <body
         className={`${nunitoSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <Image
-          src="/layout/spider-web.png"
-          alt="logo"
-          width={200}
-          height={200}
-          className="hidden md:block absolute top-0 left-0"
-        /> */}
         {children}
         <Image
           src="/layout/pumpkin1.png"

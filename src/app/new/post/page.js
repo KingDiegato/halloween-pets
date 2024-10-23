@@ -294,6 +294,7 @@ export default function Post() {
         />
 
         {error && <p className="text-red-500">{error}</p>}
+
         <Link href="/">
           <Image
             width={600}
@@ -303,6 +304,14 @@ export default function Post() {
             alt="logo-full-size"
           />
         </Link>
+        <p className="text-sm mt-2 text-gray-500 max-w-96">
+          Nota: La ia puede tener problemas para reconocer bien a tu perro o
+          gato, los razgos faciales son mas complejos que los de una persona,
+          por lo tanto pueden ocurrir efectos inesperados como que no aparezca
+          una máscara o que tu perro pueda tener otro color e incluso que sea
+          otra especie. Pero eso lo hará divertido! compartenos una foto de tu
+          mascota estas fiestas!
+        </p>
       </main>
     </div>
   );
