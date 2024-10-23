@@ -16,7 +16,7 @@ export async function POST(request, params) {
   const number = randomNumber();
 
   const maskType = {
-    assassin: `masks:insulin:insulin${number}`,
+    assassin: `masks:assassin:assassin${number}`,
     clown: `masks:clown:clown${number}`,
     ghost: `masks:ghost:ghost${number}`,
     pumpkin: `masks:pumpkin:pumpkin${number}`,
