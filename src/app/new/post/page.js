@@ -78,8 +78,8 @@ export default function Post() {
         method: "POST",
         body: formData,
       });
-      const data = await response.json();
-      setData({ ...data });
+      const res = await response.json();
+      setData({ ...data, ...res });
     } catch (e) {
       console.error(e);
     }

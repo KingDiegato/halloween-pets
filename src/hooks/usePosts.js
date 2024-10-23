@@ -104,7 +104,6 @@ const usePosts = (filter) => {
   };
 
   const removeLike = async (newPostLiked) => {
-    console.log(newPostLiked);
     const { data: post } = await supabase
       .from("Publicacion")
       .select("likes")
