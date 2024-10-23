@@ -48,6 +48,12 @@ export default function Home() {
         </div>
       </aside>
       <main className="flex flex-col gap-8 items-center sm:items-start">
+        <Link
+          href={"/new/post"}
+          className="bg-[#ff7816] self-stretch text-center hover:bg-[#fd7301] sticky top-2 text-white font-bold py-2 px-4 rounded"
+        >
+          Sube tu mascota con disfraz de halloween!!
+        </Link>
         <PostsScroll
           posts={posts}
           updatePost={updatePost}
