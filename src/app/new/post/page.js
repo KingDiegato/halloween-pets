@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { ImageInput } from "@/components/imageInput";
 import { CldImage } from "next-cloudinary";
@@ -9,6 +9,14 @@ import Link from "next/link";
 import { useTransform } from "@/stores/transform";
 import usePosts from "@/hooks/usePosts";
 import { useRouter } from "next/navigation";
+import {
+  GiWitchFace,
+  GiChewedSkull,
+  GiPumpkinMask,
+  GiCrackedMask,
+  GiClown,
+} from "react-icons/gi";
+import { SiGhostery } from "react-icons/si";
 {
   /* eslint-disable @next/next/no-img-element */
 }
@@ -108,6 +116,105 @@ export default function Post() {
             Publicar!
           </button>
         )}
+        <div className="absolute flex flex-col right-4 top-40">
+          <input
+            id="pumpkin"
+            type="radio"
+            name="mask"
+            className="hidden input-mask"
+            value="pumpkin"
+            onClick={() => {
+              setData({ ...data, selectedMask: "pumpkin" });
+            }}
+          />
+          <label
+            for="pumpkin"
+            className=" target:text-white border-solid border-2 border-[#ff7816] p-4 rounded-xl m-2"
+          >
+            <GiPumpkinMask size={40} />
+          </label>
+          <input
+            id="witch"
+            type="radio"
+            name="mask"
+            className="hidden input-mask"
+            value="witch"
+            onClick={() => {
+              setData({ ...data, selectedMask: "witch" });
+            }}
+          />
+          <label
+            for="witch"
+            className=" target:text-white border-solid border-2 border-[#ff7816] p-4 rounded-xl m-2"
+          >
+            <GiWitchFace size={40} />
+          </label>
+          <input
+            id="clown"
+            type="radio"
+            name="mask"
+            className="hidden input-mask"
+            value="clown"
+            onClick={() => {
+              setData({ ...data, selectedMask: "clown" });
+            }}
+          />
+          <label
+            for="clown"
+            className=" target:text-white border-solid border-2 border-[#ff7816] p-4 rounded-xl m-2"
+          >
+            <GiClown size={40} />
+          </label>
+          <input
+            id="assassin"
+            type="radio"
+            name="mask"
+            className="hidden input-mask"
+            value="assassin"
+            onClick={() => {
+              setData({ ...data, selectedMask: "assassin" });
+            }}
+          />
+          <label
+            for="assassin"
+            className=" target:text-white border-solid border-2 border-[#ff7816] p-4 rounded-xl m-2"
+          >
+            <GiCrackedMask size={40} />
+          </label>
+          <input
+            id="skull"
+            type="radio"
+            name="mask"
+            className="hidden input-mask"
+            value="skull"
+            onClick={() => {
+              setData({ ...data, selectedMask: "skull" });
+            }}
+          />
+          <label
+            for="skull"
+            className=" target:text-white border-solid border-2 border-[#ff7816] p-4 rounded-xl m-2"
+          >
+            <GiChewedSkull size={40} />
+          </label>
+          <input
+            id="ghost"
+            type="radio"
+            name="mask"
+            className="hidden input-mask"
+            value="ghost"
+            onClick={() => {
+              setData({ ...data, selectedMask: "ghost" });
+            }}
+          />
+          <label
+            for="ghost"
+            className=" target:text-white border-solid border-2 border-[#ff7816] p-4 rounded-xl m-2"
+          >
+            <SiGhostery size={40} />
+          </label>
+        </div>
+
         {binary ? (
           <>
             <CldImage width={600} height={420} src={binary} alt="My-pet" />
@@ -152,12 +259,18 @@ export default function Post() {
                   onClick={async () => {
                     if (image) {
                       if (!data.public_id) return;
+                      setData({ ...data, ok: false, error: null });
                       const response = await fetch("/api/transform", {
                         method: "POST",
                         body: JSON.stringify(data),
                       });
 
                       const res = await response.json();
+
+                      if (res.error) {
+                        setData({ ...data, error: res.error });
+                        return;
+                      }
                       setTransformedImage(res.image);
                     }
                   }}

@@ -25,3 +25,8 @@ body {
     text-wrap: balance;
   }
 }
+
+.input-mask:checked + label {
+  @apply bg-[#ff7816];
+  @apply text-white;
+}

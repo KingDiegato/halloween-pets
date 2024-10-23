@@ -55,6 +55,8 @@ export async function POST(request) {
     );
   }
 
+  console.log(response);
+
   return NextResponse.json({
     message: "Imagen subida!",
     error: null,
@@ -62,6 +64,8 @@ export async function POST(request) {
     public_id: response.public_id,
     folder: response.folder,
     ok: true,
+    height: response.height,
+    width: response.width,
     tags,
   });
 }
