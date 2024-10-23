@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import usePosts from "@/hooks/usePosts";
 import { PostsScroll } from "@/components/postsScroll";
 import Link from "next/link";
+import { useBooting } from "@/hooks/useBooting";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -28,7 +29,7 @@ export default function Home() {
       });
     });
   }
-
+  useBooting();
   const { getPosts } = usePosts();
 
   useEffect(
