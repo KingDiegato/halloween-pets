@@ -38,7 +38,7 @@ export async function POST(request, params) {
       {
         flags: "layer_apply",
         gravity: "faces",
-        y: selectedMask === "witch" ? -(height / 3) : 0,
+        y: selectedMask === "witch" ? -(height / 3) | 0 : 0,
       },
     ],
   });
