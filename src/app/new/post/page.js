@@ -113,7 +113,7 @@ export default function Post() {
             onClick={handlePost}
             className="bg-[#ff7816] text-white font-bold py-2 px-4 rounded"
           >
-            Publicar!
+            Crea una Publicacion!
           </button>
         )}
         <div className="absolute flex flex-col right-4 top-40">
