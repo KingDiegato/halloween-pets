@@ -279,7 +279,7 @@ export default function Post() {
                 </button>
               </div>
             )}
-
+            {data.message && <p className="text-green-500">{data.message}</p>}
             {data.error && <p className="text-red-500">{data.error}</p>}
           </>
         ) : (

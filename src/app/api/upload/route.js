@@ -44,7 +44,7 @@ export async function POST(request) {
     await cloudinary.uploader.destroy(response.public_id);
     return NextResponse.json(
       {
-        message: "Error en la categoría",
+        message: "La imagen debe contener un perro o un gato",
         error: "Error en la categoría",
         url: "",
         public_id: null,
